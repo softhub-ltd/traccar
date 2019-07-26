@@ -10,10 +10,10 @@ import urllib
 
 deviceUniqueId = '1'  # Make sure the device with this Id exists in Traccar server
 server = 'localhost:5055'
-interval = 1  # Interval in seconds
+interval = 1  #Interval in seconds
 step = 0.001
 device_speed = 0
-numberOfRequests = 3; # How many times should we post to the device
+numberOfRequests = 3 #How many times should we post to the device
 
 driver_id = '123456'
 
