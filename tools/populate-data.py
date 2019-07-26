@@ -8,11 +8,13 @@ import random
 import time
 import urllib
 
-deviceUniqueId = '65'  # Make sure the device with this Id exists in Traccar server
+deviceUniqueId = '1'  # Make sure the device with this Id exists in Traccar server
 server = 'localhost:5055'
-period = 1  # Interval in seconds
+interval = 1  # Interval in seconds
 step = 0.001
-device_speed = 40
+device_speed = 0
+numberOfRequests = 3; # How many times should we post to the device
+
 driver_id = '123456'
 
 waypoints = [
@@ -75,7 +77,7 @@ index = 0
 
 conn = httplib.HTTPConnection(server)
 
-while index < 2:
+while index < numberOfRequests:
     (lat1, lon1) = points[index % len(points)]
     (lat2, lon2) = points[(index + 1) % len(points)]
     speed = device_speed if (index % len(points)) != 0 else 0
@@ -90,5 +92,5 @@ while index < 2:
     driverUniqueId = driver_id if (index % len(points)) == 0 else False
     send(conn, lat1, lon1, course(lat1, lon1, lat2, lon2), speed, alarm, ignition, accuracy, rpm, fuel, driverUniqueId,
          temp, humid)
-    time.sleep(period)
+    time.sleep(interval)
     index += 1
