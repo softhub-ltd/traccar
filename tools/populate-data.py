@@ -1,14 +1,22 @@
 #!/usr/bin/python
 
-#This script populates data to a given device ID. The scripts assumes a user to be "admin".
+# This script populates data to a given device ID.
+# Example usage: python populate-data.py 1000 where 1000 is a device Id.
 
 import httplib
 import math
 import random
 import time
 import urllib
+import sys
 
-deviceUniqueId = '1'  # Make sure the device with this Id exists in Traccar server
+if len(sys.argv) != 2:
+    sys.stderr.write("usage: {} deviceId".format(sys.argv[0]))
+    exit(-1)
+deviceUniqueId = sys.argv[1]
+print "Populating data to a device with Id = " + deviceUniqueId + " ..."
+
+#deviceUniqueId = '77'  # Make sure the device with this Id exists in Traccar server
 server = 'localhost:5055'
 interval = 1  #Interval in seconds
 step = 0.001
