@@ -15,9 +15,11 @@
  */
 package org.traccar.protocol;
 
+import com.google.common.base.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
+import jnr.ffi.annotations.In;
 import org.traccar.BaseProtocolDecoder;
 import org.traccar.DeviceSession;
 import org.traccar.NetworkMessage;
@@ -35,6 +37,7 @@ import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -160,7 +163,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
     private static final Pattern PATTERN = new PatternBuilder()
             .text("*")
             .expression("..,")                   // manufacturer
-            .number("(d+)?,")                    // imei
+            .number("(d+)?,")                   // imei
             .groupBegin()
             .text("V4,")
             .expression("(.*),")                 // response
@@ -363,9 +366,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
             position.set(Position.KEY_ODOMETER, parser.nextInt(0));
             position.set(Position.PREFIX_TEMP + 1, parser.nextInt(0));
             position.set(Position.KEY_FUEL_LEVEL, parser.nextDouble(0));
-
             position.setAltitude(parser.nextInt(0));
-
             position.setNetwork(new Network(CellTower.fromLacCid(parser.nextHexInt(0), parser.nextHexInt(0))));
         }
 
@@ -374,10 +375,45 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
             for (int i = 0; i < values.length; i++) {
                 position.set(Position.PREFIX_IO + (i + 1), values[i].trim());
             }
+
+            if(values.length >= 2) {
+                // Based on the protocol documentation,
+                // the values for temperature and humidity are placed at the end of the string
+                String humidity = values[values.length - 1];
+                String temperature = values[values.length - 2];
+
+                position.setTemperature(processTemp(temperature));
+                position.setHumidity(processHumidity(humidity));
+            }
+
         }
 
         return position;
     }
+
+
+    /**
+     * Processes temperature. Documentation says that the input can have 4 digits
+     */
+    private double processTemp(String input) {
+        if(!Strings.isNullOrEmpty(input)) {
+            double in = Double.parseDouble(input.trim());
+            if (in > 100.00 && in < 1000) {
+                return in / 10.0;
+            }
+            if(in >= 1000 && in < 10000) {
+                return in / 100.0;
+            }
+            return in;
+        }
+        return 0.0;
+    }
+
+
+    private double processHumidity(String input) {
+        return processTemp(input);
+    }
+
 
     private Position decodeLbs(String sentence, Channel channel, SocketAddress remoteAddress) {
 

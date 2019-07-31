@@ -49,6 +49,7 @@ public class Parser {
 
     public boolean hasNext(int number) {
         String value = matcher.group(position);
+       // System.out.println("Group"+ number + " : " + value);
         if (value != null && !value.isEmpty()) {
             return true;
         } else {
@@ -58,7 +59,9 @@ public class Parser {
     }
 
     public String next() {
-        return matcher.group(position++);
+        String value = matcher.group(position++);
+       // System.out.println("Group value: " + position + "=" + value);
+        return value;
     }
 
     public Integer nextInt() {
