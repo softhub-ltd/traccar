@@ -19,16 +19,11 @@ import com.google.common.base.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
-import jnr.ffi.annotations.In;
 import org.traccar.BaseProtocolDecoder;
 import org.traccar.DeviceSession;
 import org.traccar.NetworkMessage;
 import org.traccar.Protocol;
-import org.traccar.helper.BcdUtil;
-import org.traccar.helper.BitUtil;
-import org.traccar.helper.DateBuilder;
-import org.traccar.helper.Parser;
-import org.traccar.helper.PatternBuilder;
+import org.traccar.helper.*;
 import org.traccar.model.CellTower;
 import org.traccar.model.Network;
 import org.traccar.model.Position;
@@ -37,7 +32,6 @@ import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
@@ -376,16 +370,16 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
                 position.set(Position.PREFIX_IO + (i + 1), values[i].trim());
             }
 
-            if(values.length >= 2) {
+            if(values.length > 5) {
                 // Based on the protocol documentation,
-                // the values for temperature and humidity are placed at the end of the string
-                String humidity = values[values.length - 1];
-                String temperature = values[values.length - 2];
+                // the values for temperature and humidity
+                // are at position index 4 and 5 respectively.
+                double temperature = processTemp(values[4], 0.0);
+                double humidity = processHumidity(values[5], 0.0);
 
-                position.setTemperature(processTemp(temperature));
-                position.setHumidity(processHumidity(humidity));
+                position.setTemperature(temperature);
+                position.setHumidity(humidity);
             }
-
         }
 
         return position;
@@ -393,9 +387,9 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
 
 
     /**
-     * Processes temperature. Documentation says that the input can have 4 digits
+     * Processes temperature. The input can have maximum of 4 digits
      */
-    private double processTemp(String input) {
+    private double processTemp(String input, double defaultValue) {
         if(!Strings.isNullOrEmpty(input)) {
             double in = Double.parseDouble(input.trim());
             if (in > 100.00 && in < 1000) {
@@ -406,12 +400,12 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
             }
             return in;
         }
-        return 0.0;
+        return defaultValue;
     }
 
 
-    private double processHumidity(String input) {
-        return processTemp(input);
+    private double processHumidity(String input, double defaultValue) {
+        return processTemp(input, defaultValue);
     }
 
 
