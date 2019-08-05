@@ -14,7 +14,7 @@ messages = {
 }
 
 baseUrl = 'http://localhost:8082'
-user = {'email': 'hemed_ali@hotmail.com', 'password': 'batoji'}
+user = { 'email' : 'admin', 'password' : 'admin' }
 
 debug = '-v' in sys.argv
 

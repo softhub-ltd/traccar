@@ -21,7 +21,7 @@ server = 'localhost:5055'
 interval = 1  #Interval in seconds
 step = 0.001
 device_speed = 0
-numberOfRequests = 3 #How many times should we post to the device
+numberOfRequests = 1 #How many times should we post to the device
 
 driver_id = '123456'
 
@@ -94,7 +94,7 @@ while index < numberOfRequests:
     accuracy = 100 if (index % 10) == 0 else 0
     rpm = random.randint(500, 4000)
     fuel = random.randint(0, 80)
-    temp = random.randint(25, 40)
+    temp = random.randint(30, 50)
     humid = random.randint(60, 80)
 
     driverUniqueId = driver_id if (index % len(points)) == 0 else False
