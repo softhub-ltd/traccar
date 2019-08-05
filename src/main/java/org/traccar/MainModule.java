@@ -60,15 +60,7 @@ import org.traccar.handler.HemisphereHandler;
 import org.traccar.handler.MotionHandler;
 import org.traccar.handler.RemoteAddressHandler;
 import org.traccar.handler.TimeHandler;
-import org.traccar.handler.events.AlertEventHandler;
-import org.traccar.handler.events.CommandResultEventHandler;
-import org.traccar.handler.events.DriverEventHandler;
-import org.traccar.handler.events.FuelDropEventHandler;
-import org.traccar.handler.events.GeofenceEventHandler;
-import org.traccar.handler.events.IgnitionEventHandler;
-import org.traccar.handler.events.MaintenanceEventHandler;
-import org.traccar.handler.events.MotionEventHandler;
-import org.traccar.handler.events.OverspeedEventHandler;
+import org.traccar.handler.events.*;
 import org.traccar.reports.model.TripsConfig;
 
 import javax.annotation.Nullable;
@@ -373,6 +365,12 @@ public class MainModule extends AbstractModule {
     @Provides
     public static DriverEventHandler provideDriverEventHandler(IdentityManager identityManager) {
         return new DriverEventHandler(identityManager);
+    }
+
+    @Singleton
+    @Provides
+    public static HighTemperatureEventHandler provideHighTemperatureEventHandler(IdentityManager identityManager) {
+        return new HighTemperatureEventHandler(identityManager);
     }
 
     @Override
