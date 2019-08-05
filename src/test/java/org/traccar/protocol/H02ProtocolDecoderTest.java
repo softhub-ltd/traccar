@@ -17,8 +17,8 @@ public class H02ProtocolDecoderTest extends ProtocolTest {
                 "*HQ,8168000008,V1,043602,A,2234.9273,N,11354.3980,E,000.06,000,100715,FBFFBBFF,460,00,10342,4283,265,52#");
         Position position = (Position) decoder.decode(null, null, protocolMessage);
 
-        assertEquals(26.5, position.getTemperature());
-        assertEquals(52.0, position.getHumidity());
+        assertEquals(26.5, position.getAttributes().get(Position.KEY_TEMPERATURE));
+        assertEquals(52.0, position.getAttributes().get(Position.KEY_HUMIDITY));
 
     }
 

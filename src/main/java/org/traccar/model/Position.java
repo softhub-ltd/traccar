@@ -46,6 +46,10 @@ public class Position extends Message {
     public static final String KEY_VIDEO = "video";
     public static final String KEY_AUDIO = "audio";
 
+    //Custom keys for TrackBees devices
+    public static final String KEY_TEMPERATURE = "temperature";
+    public static final String KEY_HUMIDITY = "humidity";
+
     // The units for the below four KEYs currently vary.
     // The preferred units of measure are specified in the comment for each.
     public static final String KEY_POWER = "power"; // volts
@@ -258,10 +262,6 @@ public class Position extends Message {
 
     private double course;
 
-    private double temperature;
-
-    private double humidity;
-
     public double getCourse() {
         return course;
     }
@@ -300,27 +300,10 @@ public class Position extends Message {
         this.network = network;
     }
 
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public double getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
-    }
-
     @Override
     @QueryIgnore
     public String getType() {
         return super.getType();
     }
-
 
 }

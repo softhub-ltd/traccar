@@ -377,8 +377,8 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
                 double temperature = processTemp(values[4], 0.0);
                 double humidity = processHumidity(values[5], 0.0);
 
-                position.setTemperature(temperature);
-                position.setHumidity(humidity);
+                position.set(Position.KEY_TEMPERATURE, temperature);
+                position.set(Position.KEY_HUMIDITY, humidity);
             }
         }
 
