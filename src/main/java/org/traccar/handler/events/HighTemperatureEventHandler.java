@@ -13,15 +13,16 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * This handler generates a new event if high temperature is detected.
+ * An event handler which generates new event if high temperature is detected.
  *
  * @author Hemed Ali
  */
 @ChannelHandler.Sharable
 public class HighTemperatureEventHandler extends BaseEventHandler {
-    private static final Logger logger = LoggerFactory.getLogger(HighTemperatureEventHandler.class);
-    private final static double TEMP_THRESHOLD = 37.0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HighTemperatureEventHandler.class);
+    private static final double TEMP_THRESHOLD = 37.5; // move to config file
     private final IdentityManager identityManager;
+    private boolean monitorHighTemperature = true; // move to config file
 
 
     public HighTemperatureEventHandler(IdentityManager identityManager) {
@@ -30,28 +31,29 @@ public class HighTemperatureEventHandler extends BaseEventHandler {
 
     @Override
     protected Map<Event, Position> analyzePosition(Position position) {
-        Device device = identityManager.getById(position.getDeviceId());
+        if (monitorHighTemperature) {
+            Device device = identityManager.getById(position.getDeviceId());
+            //Ensure validity
+            if (Objects.isNull(device)
+                    || !position.getValid()
+                    || !identityManager.isLatestPosition(position)) {
+                return Collections.emptyMap();
+            }
+            if (position.getAttributes().containsKey(Position.KEY_TEMPERATURE)) {
+                Position lastPosition = identityManager.getLastPosition(position.getDeviceId());
+                double currentTemp = position.getDouble(Position.KEY_TEMPERATURE);
+                double lastTemp = lastPosition == null ? 0.0 : lastPosition.getDouble(Position.KEY_TEMPERATURE);
 
-        //Ensure validity
-        if (Objects.isNull(device) ||
-                !position.getValid() ||
-                !identityManager.isLatestPosition(position)) {
-            return Collections.emptyMap();
-        }
-
-        if (position.getAttributes().containsKey(Position.KEY_TEMPERATURE)) {
-            Position lastPosition = identityManager.getLastPosition(position.getDeviceId());
-            double currentTemp = position.getDouble(Position.KEY_TEMPERATURE);
-            double lastTemp = lastPosition == null? 0.0 : lastPosition.getDouble(Position.KEY_TEMPERATURE);
-
-            if (currentTemp > TEMP_THRESHOLD && currentTemp >= lastTemp) {
-                logger.info("High temperature on device {}, current value {}, last value {}",
-                        device.getName(), currentTemp, lastTemp);
-                Event event = new Event(Event.HIGH_TEMPERATURE, position.getDeviceId(), position.getId());
-                event.set(Position.KEY_TEMPERATURE, currentTemp);
-                return Collections.singletonMap(event, position);
+                if (currentTemp > TEMP_THRESHOLD && currentTemp >= lastTemp) {
+                    LOGGER.info("High temperature detected on device {}, current value {}, previous value {}",
+                            device.getName(), currentTemp, lastTemp);
+                    Event event = new Event(Event.TYPE_HIGH_TEMPERATURE, position.getDeviceId(), position.getId());
+                    event.set(Position.KEY_TEMPERATURE, currentTemp);
+                    return Collections.singletonMap(event, position);
+                }
             }
         }
         return Collections.emptyMap();
     }
+
 }

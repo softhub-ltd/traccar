@@ -10,7 +10,7 @@ import urllib2
 import xml.etree.ElementTree
 
 messages = {
-    'h02': '*HQ,777,V1,043602,A,2234.9273,N,11354.3980,E,000.06,000,100715,FBFFBBFF,460,00,10342,4283,05,265,52#',
+    'h02': '*HQ,777,V1,043602,A,2234.9273,N,11354.3980,E,000.06,000,100715,FBFFBBFF,460,00,10342,4283,465,52,89#',
 }
 
 baseUrl = 'http://localhost:8082'
@@ -90,8 +90,8 @@ cookie = login()
 remove_devices(cookie)
 
 devices = {
-    '777': add_device(cookie, '777'),
-    '5': add_device(cookie, '5'),
+    'InterTest1': add_device(cookie, '777'),
+    'InterTest2': add_device(cookie, '5'),
 
 }
 

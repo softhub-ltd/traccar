@@ -23,11 +23,14 @@ import org.traccar.BaseProtocolDecoder;
 import org.traccar.DeviceSession;
 import org.traccar.NetworkMessage;
 import org.traccar.Protocol;
-import org.traccar.helper.*;
+import org.traccar.helper.BcdUtil;
+import org.traccar.helper.BitUtil;
+import org.traccar.helper.DateBuilder;
+import org.traccar.helper.Parser;
+import org.traccar.helper.PatternBuilder;
 import org.traccar.model.CellTower;
 import org.traccar.model.Network;
 import org.traccar.model.Position;
-
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -369,8 +372,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
             for (int i = 0; i < values.length; i++) {
                 position.set(Position.PREFIX_IO + (i + 1), values[i].trim());
             }
-
-            if(values.length > 5) {
+            if (values.length > 5) {
                 // Based on the protocol documentation,
                 // the values for temperature and humidity
                 // are at position index 4 and 5 respectively.
@@ -380,8 +382,11 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
                 position.set(Position.KEY_TEMPERATURE, temperature);
                 position.set(Position.KEY_HUMIDITY, humidity);
             }
-        }
 
+            if (values.length > 6) { // Contains battery level
+                position.set(Position.KEY_BATTERY_LEVEL, Integer.parseInt(values[6].trim()));
+            }
+        }
         return position;
     }
 
@@ -390,12 +395,12 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
      * Processes temperature. The input can have maximum of 4 digits
      */
     private double processTemp(String input, double defaultValue) {
-        if(!Strings.isNullOrEmpty(input)) {
+        if (!Strings.isNullOrEmpty(input)) {
             double in = Double.parseDouble(input.trim());
             if (in > 100.00 && in < 1000) {
                 return in / 10.0;
             }
-            if(in >= 1000 && in < 10000) {
+            if (in >= 1000 && in < 10000) {
                 return in / 100.0;
             }
             return in;

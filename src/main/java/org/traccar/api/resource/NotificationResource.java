@@ -59,8 +59,8 @@ public class NotificationResource extends ExtendedObjectResource<Notification> {
     @Path("test")
     public Response testMessage() throws MessageException, InterruptedException {
         for (Typed method : Context.getNotificatorManager().getAllNotificatorTypes()) {
-            Context.getNotificatorManager()
-                    .getNotificator(method.getType()).sendSync(getUserId(), new Event("test", 0), null);
+            Context.getNotificatorManager().getNotificator(method.getType())
+                    .sendSync(getUserId(), new Event("test", 0), null);
         }
         return Response.noContent().build();
     }
@@ -69,7 +69,8 @@ public class NotificationResource extends ExtendedObjectResource<Notification> {
     @Path("test/{notificator}")
     public Response testMessage(@PathParam("notificator") String notificator)
             throws MessageException, InterruptedException {
-        Context.getNotificatorManager().getNotificator(notificator).sendSync(getUserId(), new Event("test", 0), null);
+        Context.getNotificatorManager().getNotificator(notificator)
+                .sendSync(getUserId(), new Event("test", 0), null);
         return Response.noContent().build();
     }
 

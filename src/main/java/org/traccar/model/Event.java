@@ -60,7 +60,7 @@ public class Event extends Message {
     public static final String TYPE_TEXT_MESSAGE = "textMessage";
 
     public static final String TYPE_DRIVER_CHANGED = "driverChanged";
-    public static final String HIGH_TEMPERATURE = "highTemperature";
+    public static final String TYPE_HIGH_TEMPERATURE = "highTemperature";
 
     private Date serverTime;
 

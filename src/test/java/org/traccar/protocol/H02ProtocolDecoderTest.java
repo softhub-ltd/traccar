@@ -24,6 +24,22 @@ public class H02ProtocolDecoderTest extends ProtocolTest {
 
 
     @Test
+    public void shouldContainTempAndHumidAndBatteryLevel() throws  Exception {
+        H02ProtocolDecoder decoder = new H02ProtocolDecoder(null);
+        //Battery level is appended at the end
+        ByteBuf protocolMessage = buffer(
+                "*HQ,8168000008,V1,043602,A,2234.9273,N,11354.3980,E,000.06,000,100715,FBFFBBFF,460,00,10342,4283,265,52,89#");
+        Position position = (Position) decoder.decode(null, null, protocolMessage);
+
+        assertEquals(26.5, position.getAttributes().get(Position.KEY_TEMPERATURE));
+        assertEquals(52.0, position.getAttributes().get(Position.KEY_HUMIDITY));
+        assertEquals(89,   position.getAttributes().get(Position.KEY_BATTERY_LEVEL));
+
+
+    }
+
+
+    @Test
     public void testDecode() throws Exception {
         H02ProtocolDecoder decoder = new H02ProtocolDecoder(null);
 
