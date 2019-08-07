@@ -1,0 +1,11 @@
+#set($subject = "[Alert] High temperature for hive $device.name")
+#set($tempString = $numberTool.format("0.0 C", $event.getDouble('temperature')))
+<!DOCTYPE html>
+<html>
+<body>
+<p>
+    High temperature detected in the hive <strong>$device.name</strong> at <strong>$tempString</strong>
+    on $dateTool.format("YYYY-MM-dd HH:mm:ss", $event.serverTime, $locale, $timezone). Please take an action as soon as possible.
+</p>
+</body>
+</html>

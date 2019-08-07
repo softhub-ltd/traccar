@@ -23,4 +23,15 @@
     <entry key='database.user'>sa</entry>
     <entry key='database.password'></entry>
 
+    <!-- Configure mail notifications -->
+    <entry key='mail.smtp.host'>mail.softhub.co.tz</entry>
+    <entry key='mail.smtp.port'>465</entry>
+    <entry key='mail.smtp.ssl.enable'>true</entry>
+    <entry key="mail.smtp.starttls.enable">true</entry>
+    <entry key='mail.smtp.from'>TrackBees LLC&lt;trackbees@softhub.co.tz&gt;</entry>
+    <entry key='mail.smtp.auth'>true</entry>
+    <entry key="mail.smtps.ssl.trust">*</entry>
+    <entry key='mail.smtp.username'>trackbees@softhub.co.tz</entry>
+    <entry key='mail.smtp.password'>Trackbees2019</entry>
+
 </properties>

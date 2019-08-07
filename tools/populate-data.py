@@ -94,7 +94,7 @@ while index < numberOfRequests:
     accuracy = 100 if (index % 10) == 0 else 0
     rpm = random.randint(500, 4000)
     fuel = random.randint(0, 80)
-    temp = random.randint(30, 50)
+    temp = random.randint(40, 50)
     humid = random.randint(60, 80)
 
     driverUniqueId = driver_id if (index % len(points)) == 0 else False
