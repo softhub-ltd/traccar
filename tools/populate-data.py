@@ -17,8 +17,8 @@ deviceUniqueId = sys.argv[1]
 print "Populating data to a device with Id = " + deviceUniqueId + " ..."
 
 #deviceUniqueId = '77'  # Make sure the device with this Id exists in Traccar server
-server = 'demo5.traccar.org:5055'
-#server = 'localhost:5055'
+#server = 'demo5.traccar.org:5055'
+server = 'localhost:5055'
 interval = 1  #Interval in seconds
 step = 0.001
 device_speed = 0
