@@ -17,7 +17,8 @@ deviceUniqueId = sys.argv[1]
 print "Populating data to a device with Id = " + deviceUniqueId + " ..."
 
 #deviceUniqueId = '77'  # Make sure the device with this Id exists in Traccar server
-server = 'localhost:5055'
+server = 'demo5.traccar.org:5055'
+#server = 'localhost:5055'
 interval = 1  #Interval in seconds
 step = 0.001
 device_speed = 0
@@ -47,7 +48,7 @@ for i in range(0, len(waypoints)):
         points.append((lat, lon))
 
 
-def send(conn, lat, lon, course, speed, alarm, ignition, accuracy, rpm, fuel, driverUniqueId, temp, humid):
+def send(conn, lat, lon, course, speed, alarm, ignition, accuracy, rpm, fuel, driverUniqueId, temp, humid, bat):
     params = (
     ('id', deviceUniqueId), ('timestamp', int(time.time())), ('lat', lat), ('lon', lon), ('bearing', course), ('speed', speed))
     if alarm:
@@ -66,6 +67,8 @@ def send(conn, lat, lon, course, speed, alarm, ignition, accuracy, rpm, fuel, dr
         params = params + (('temperature', temp),)
     if humid:
         params = params + (('humidity', humid),)
+    if bat:
+        params = params + (('batteryLevel', bat),)
 
     conn.request('GET', '?' + urllib.urlencode(params))
     conn.getresponse().read()
@@ -94,11 +97,12 @@ while index < numberOfRequests:
     accuracy = 100 if (index % 10) == 0 else 0
     rpm = random.randint(500, 4000)
     fuel = random.randint(0, 80)
-    temp = random.randint(40, 50)
-    humid = random.randint(60, 80)
+    temp = round(random.uniform(30,60), 2)
+    humid = round(random.uniform(20,100), 2)
+    bat = round(random.uniform(30,100), 2)
 
     driverUniqueId = driver_id if (index % len(points)) == 0 else False
     send(conn, lat1, lon1, course(lat1, lon1, lat2, lon2), speed, alarm, ignition, accuracy, rpm, fuel, driverUniqueId,
-         temp, humid)
+         temp, humid, bat)
     time.sleep(interval)
     index += 1
