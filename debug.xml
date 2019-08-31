@@ -32,5 +32,7 @@
     <entry key="mail.smtps.ssl.trust">*</entry>
     <entry key='mail.smtp.username'>trackbees@softhub.co.tz</entry>
     <entry key='mail.smtp.password'>Trackbees2019</entry>
+    <entry key='notificator.types'>mail,firebase</entry>
+    <entry key='notificator.firebase.key'>AAAANohzOMc:APA91bFLkIsbeHJyCBoG5bcr2wSBaoVJFE8vkdITx7O8xiMlU9wL3IuoR5QAh-XSjwfbZ5tr7NnL5uRc3PGN5-fS-hD4Lvx5tIlgS3Zk6IRmQVzLQF4gqYUvbKKpO0nYryrD2JC_YSff</entry>
 
 </properties>
