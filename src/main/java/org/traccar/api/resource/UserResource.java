@@ -99,14 +99,16 @@ public class UserResource extends BaseObjectResource<User> {
     }
 
     private void subscribeToNotifications(long userId) throws SQLException {
-        String commaSeparatedNotificatorTypes = getCommaSeparatedNotificatorTypes(Context.getNotificatorManager().getAllNotificatorTypes());
+        String commaSeparatedNotificatorTypes =
+                getCommaSeparatedNotificatorTypes(Context.getNotificatorManager().getAllNotificatorTypes());
         createAndLinkNotification(Event.TYPE_HIGH_TEMPERATURE, userId, commaSeparatedNotificatorTypes);
         createAndLinkNotification(Event.TYPE_LOW_TEMPERATURE, userId, commaSeparatedNotificatorTypes);
         createAndLinkNotification(Event.TYPE_HIGH_HUMIDITY, userId, commaSeparatedNotificatorTypes);
         createAndLinkNotification(Event.TYPE_LOW_HUMIDITY, userId, commaSeparatedNotificatorTypes);
     }
 
-    private void createAndLinkNotification(String eventType, long userId, String commaSeparatedNotificatorTypes) throws SQLException {
+    private void createAndLinkNotification(String eventType, long userId, String commaSeparatedNotificatorTypes)
+            throws SQLException {
         Notification notification = new Notification();
         notification.setAlways(true);
         notification.setNotificators(commaSeparatedNotificatorTypes);
