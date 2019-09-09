@@ -32,6 +32,7 @@ import org.traccar.handler.events.CommandResultEventHandler;
 import org.traccar.handler.events.DriverEventHandler;
 import org.traccar.handler.events.FuelDropEventHandler;
 import org.traccar.handler.events.GeofenceEventHandler;
+import org.traccar.handler.events.HighHumidityEventHandler;
 import org.traccar.handler.events.IgnitionEventHandler;
 import org.traccar.handler.events.MaintenanceEventHandler;
 import org.traccar.handler.events.MotionEventHandler;
@@ -153,6 +154,7 @@ public abstract class BasePipelineFactory extends ChannelInitializer<Channel> {
                     IgnitionEventHandler.class,
                     MaintenanceEventHandler.class,
                     HighTemperatureEventHandler.class,
+                    HighHumidityEventHandler.class,
                     DriverEventHandler.class);
         }
 

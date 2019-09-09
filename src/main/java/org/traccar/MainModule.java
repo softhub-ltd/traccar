@@ -65,6 +65,7 @@ import org.traccar.handler.events.CommandResultEventHandler;
 import org.traccar.handler.events.DriverEventHandler;
 import org.traccar.handler.events.FuelDropEventHandler;
 import org.traccar.handler.events.GeofenceEventHandler;
+import org.traccar.handler.events.HighHumidityEventHandler;
 import org.traccar.handler.events.IgnitionEventHandler;
 import org.traccar.handler.events.MaintenanceEventHandler;
 import org.traccar.handler.events.MotionEventHandler;
@@ -381,6 +382,13 @@ public class MainModule extends AbstractModule {
     public static HighTemperatureEventHandler provideHighTemperatureEventHandler(
             Config config, IdentityManager identityManager) {
         return new HighTemperatureEventHandler(config, identityManager);
+    }
+
+    @Singleton
+    @Provides
+    public static HighHumidityEventHandler provideHighHumidityEventHandler(
+            Config config, IdentityManager identityManager) {
+        return new HighHumidityEventHandler(config, identityManager);
     }
 
     @Override
