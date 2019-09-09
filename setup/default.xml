@@ -33,6 +33,7 @@
 
     <entry key='event.highTemperatureThreshold'>50.0</entry>
     <entry key='event.highHumidityThreshold'>90.0</entry>
+    <entry key='event.lowHumidityThreshold'>30.0</entry>
 
     <entry key='media.path'>./media</entry>
 

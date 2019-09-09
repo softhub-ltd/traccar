@@ -79,6 +79,11 @@ public final class Keys {
      */
     public static final ConfigKey EVENT_HIGH_HUMIDITY_THRESHOLD = new ConfigKey(
             "event.highHumidityThreshold", Double.class);
+    /**
+     * Threshold to check whether the humidity data is in low state or not.
+     */
+    public static final ConfigKey EVENT_LOW_HUMIDITY_THRESHOLD = new ConfigKey(
+            "event.lowHumidityThreshold", Double.class);
 
     /**
      * List of external handler classes to use in Netty pipeline.
