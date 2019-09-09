@@ -75,6 +75,11 @@ public final class Keys {
     public static final ConfigKey EVENT_HIGH_TEMP_THRESHOLD = new ConfigKey(
             "event.highTemperatureThreshold", Double.class);
     /**
+     * Threshold to check whether the temperature data is in high state or not.
+     */
+    public static final ConfigKey EVENT_LOW_TEMP_THRESHOLD = new ConfigKey(
+            "event.lowTemperatureThreshold", Double.class);
+    /**
      * Threshold to check whether the humidity data is in high state or not.
      */
     public static final ConfigKey EVENT_HIGH_HUMIDITY_THRESHOLD = new ConfigKey(
