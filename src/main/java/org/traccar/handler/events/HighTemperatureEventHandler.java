@@ -3,6 +3,8 @@ package org.traccar.handler.events;
 import io.netty.channel.ChannelHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.traccar.config.Config;
+import org.traccar.config.Keys;
 import org.traccar.database.IdentityManager;
 import org.traccar.model.Device;
 import org.traccar.model.Event;
@@ -20,13 +22,14 @@ import java.util.Objects;
 @ChannelHandler.Sharable
 public class HighTemperatureEventHandler extends BaseEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(HighTemperatureEventHandler.class);
-    private static final double TEMP_THRESHOLD = 37.5; // move to config file
+    private  final double tempThreshold;
     private final IdentityManager identityManager;
     private boolean monitorHighTemperature = true; // move to config file
 
 
-    public HighTemperatureEventHandler(IdentityManager identityManager) {
+    public HighTemperatureEventHandler(Config config, IdentityManager identityManager) {
         this.identityManager = identityManager;
+        tempThreshold = config.getDouble(Keys.EVENT_HIGH_TEMP_THRESHOLD, 37.5);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class HighTemperatureEventHandler extends BaseEventHandler {
                 double currentTemp = position.getDouble(Position.KEY_TEMPERATURE);
                 double lastTemp = lastPosition == null ? 0.0 : lastPosition.getDouble(Position.KEY_TEMPERATURE);
 
-                if (currentTemp > TEMP_THRESHOLD && currentTemp >= lastTemp) {
+                if (currentTemp > tempThreshold && currentTemp >= lastTemp) {
                     LOGGER.info("High temperature detected on device {}, current value {}, previous value {}",
                             device.getName(), currentTemp, lastTemp);
                     Event event = new Event(Event.TYPE_HIGH_TEMPERATURE, position.getDeviceId(), position.getId());

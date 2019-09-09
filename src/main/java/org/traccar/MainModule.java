@@ -378,8 +378,9 @@ public class MainModule extends AbstractModule {
 
     @Singleton
     @Provides
-    public static HighTemperatureEventHandler provideHighTemperatureEventHandler(IdentityManager identityManager) {
-        return new HighTemperatureEventHandler(identityManager);
+    public static HighTemperatureEventHandler provideHighTemperatureEventHandler(
+            Config config, IdentityManager identityManager) {
+        return new HighTemperatureEventHandler(config, identityManager);
     }
 
     @Override

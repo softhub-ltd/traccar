@@ -70,6 +70,12 @@ public final class Keys {
             "event.ignoreDuplicateAlerts", Boolean.class);
 
     /**
+     * Threshold to check whether the temperature data is high state or not.
+     */
+    public static final ConfigKey EVENT_HIGH_TEMP_THRESHOLD = new ConfigKey(
+            "event.highTemperatureThreshold", Double.class);
+
+    /**
      * List of external handler classes to use in Netty pipeline.
      */
     public static final ConfigKey EXTRA_HANDLERS = new ConfigKey(

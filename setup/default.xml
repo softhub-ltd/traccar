@@ -31,6 +31,8 @@
     <entry key='processing.computedAttributes.enable'>true</entry>
     <entry key='processing.engineHours.enable'>true</entry>
 
+    <entry key='event.highTemperatureThreshold'>50.0</entry>
+
     <entry key='media.path'>./media</entry>
 
     <entry key='notificator.types'>web,mail,firebase</entry>
