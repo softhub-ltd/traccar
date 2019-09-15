@@ -1,2 +1,2 @@
-#set($tempString = $numberTool.format("0.0 C", $event.getDouble('temperature')))
-High temperature detected in the hive $device.name at $tempString
+#set($tempString = $numberTool.format("0.00 celsius", $event.getDouble('temperature')))
+High temperature detected for $device.name at $tempString
