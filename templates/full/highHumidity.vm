@@ -1,0 +1,11 @@
+#set($subject = "[Alert] High humidity for hive $device.name")
+#set($tempString = $numberTool.format("0.0 %", $event.getDouble('humidity')))
+<!DOCTYPE html>
+<html>
+<body>
+<p>
+    High humidity detected in the hive <strong>$device.name</strong> at <strong>$tempString</strong>
+    on $dateTool.format("YYYY-MM-dd HH:mm:ss", $event.serverTime, $locale, $timezone). Please take an action as soon as possible.
+</p>
+</body>
+</html>
