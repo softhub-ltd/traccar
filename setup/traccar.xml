@@ -17,13 +17,24 @@
     For list of available parameters see following page: https://www.traccar.org/configuration-file/
 
     -->
+
     <entry key='notificator.types'>web,mail,firebase</entry>
     <entry key='database.driver'>org.h2.Driver</entry>
     <entry key='database.url'>jdbc:h2:./data/database</entry>
     <entry key='database.user'>sa</entry>
-    <entry key='database.password'></entry>
+    <entry key='database.password'/>
 
-    <!-- Configure mail notifications -->
+    <entry key='event.highTemperatureThreshold'>50.0</entry>
+    <entry key='event.lowTemperatureThreshold'>27.0</entry>
+    <entry key='event.highHumidityThreshold'>90.0</entry>
+    <entry key='event.lowHumidityThreshold'>30.0</entry>
+
+    <entry key='geocoder.enable'>true</entry>
+    <entry key='logger.enable'>true</entry>
+    <entry key='logger.level'>info</entry>
+    <entry key='logger.file'>./logs/tracker-server.log</entry>
+    <entry key='logger.rotate'>true</entry>
+
     <entry key='mail.smtp.host'>mail.softhub.co.tz</entry>
     <entry key='mail.smtp.port'>465</entry>
     <entry key='mail.smtp.ssl.enable'>true</entry>
@@ -33,5 +44,7 @@
     <entry key="mail.smtps.ssl.trust">*</entry>
     <entry key='mail.smtp.username'>trackbees@softhub.co.tz</entry>
     <entry key='mail.smtp.password'>Trackbees2019</entry>
+    <entry key='notificator.types'>mail,firebase</entry>
+    <entry key='notificator.firebase.key'>AAAANohzOMc:APA91bFLkIsbeHJyCBoG5bcr2wSBaoVJFE8vkdITx7O8xiMlU9wL3IuoR5QAh-XSjwfbZ5tr7NnL5uRc3PGN5-fS-hD4Lvx5tIlgS3Zk6IRmQVzLQF4gqYUvbKKpO0nYryrD2JC_YSff</entry>
 
 </properties>
