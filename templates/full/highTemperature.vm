@@ -1,5 +1,5 @@
 #set($subject = "[Alert] High temperature for $device.name")
-#set($tempString = $numberTool.format("0.00 celsius", $event.getDouble('temperature')))
+#set($tempString = $numberTool.format("0.00°C", $event.getDouble('temperature')))
 <!DOCTYPE html>
 <html>
 <body>

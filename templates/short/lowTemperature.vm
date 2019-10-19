@@ -1,2 +1,2 @@
-#set($tempString = $numberTool.format("0.0 C", $event.getDouble('temperature')))
-Low temperature detected in the hive $device.name at $tempString
+#set($tempString = $numberTool.format("0°C", $event.getDouble('temperature')))
+Low temperature detected in $device.name at $tempString

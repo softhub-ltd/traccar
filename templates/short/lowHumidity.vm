@@ -1,2 +1,2 @@
-#set($tempString = $numberTool.format("0.0 %", $event.getDouble('humidity')))
-Low humidity detected in the hive $device.name at $tempString
+#set($tempString = $numberTool.format("0", $event.getDouble('humidity')))
+Low humidity detected in $device.name at $tempString%
