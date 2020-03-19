@@ -45,8 +45,8 @@ public class HiveMovementEventHandler extends BaseEventHandler {
             Position lastPosition = identityManager.getLastPosition(position.getDeviceId());
             boolean isNowMoving = position.getBoolean(Position.KEY_MOTION);
             boolean itWasMoving = lastPosition != null && lastPosition.getBoolean(Position.KEY_MOTION);
-            boolean isHive = device.getCategory() != null &&
-                    device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
+            boolean isHive = device.getCategory() != null
+                    && device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
             if (isHive && itWasMoving && isNowMoving) {
                 LOGGER.info("Movement detected on device {} with ID {}", device.getName(), device.getUniqueId());
                 Event event = new Event(Event.TYPE_HIVE_MOVEMENT, position.getDeviceId(), position.getId());
