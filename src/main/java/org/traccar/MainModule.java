@@ -60,19 +60,7 @@ import org.traccar.handler.HemisphereHandler;
 import org.traccar.handler.MotionHandler;
 import org.traccar.handler.RemoteAddressHandler;
 import org.traccar.handler.TimeHandler;
-import org.traccar.handler.events.AlertEventHandler;
-import org.traccar.handler.events.CommandResultEventHandler;
-import org.traccar.handler.events.DriverEventHandler;
-import org.traccar.handler.events.FuelDropEventHandler;
-import org.traccar.handler.events.GeofenceEventHandler;
-import org.traccar.handler.events.HighHumidityEventHandler;
-import org.traccar.handler.events.IgnitionEventHandler;
-import org.traccar.handler.events.LowHumidityEventHandler;
-import org.traccar.handler.events.LowTemperatureEventHandler;
-import org.traccar.handler.events.MaintenanceEventHandler;
-import org.traccar.handler.events.MotionEventHandler;
-import org.traccar.handler.events.OverspeedEventHandler;
-import org.traccar.handler.events.HighTemperatureEventHandler;
+import org.traccar.handler.events.*;
 import org.traccar.reports.model.TripsConfig;
 
 import javax.annotation.Nullable;
@@ -403,6 +391,13 @@ public class MainModule extends AbstractModule {
     public static LowHumidityEventHandler provideLowHumidityEventHandler(
             Config config, IdentityManager identityManager) {
         return new LowHumidityEventHandler(config, identityManager);
+    }
+
+    @Singleton
+    @Provides
+    public static HiveMovementEventHandler provideHiveStolenEventHandler(
+            IdentityManager identityManager) {
+        return new HiveMovementEventHandler(identityManager);
     }
 
     @Override

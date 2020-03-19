@@ -66,6 +66,8 @@ public class Event extends Message {
 
     public static final String TYPE_HIGH_HUMIDITY = "highHumidity";
     public static final String TYPE_LOW_HUMIDITY = "lowHumidity";
+    public static final String TYPE_HIVE_MOVEMENT = "hiveMovement";
+
 
     private Date serverTime;
 

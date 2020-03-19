@@ -27,21 +27,9 @@ import org.slf4j.LoggerFactory;
 import org.traccar.config.Keys;
 import org.traccar.handler.DefaultDataHandler;
 import org.traccar.handler.TimeHandler;
-import org.traccar.handler.events.AlertEventHandler;
-import org.traccar.handler.events.CommandResultEventHandler;
-import org.traccar.handler.events.DriverEventHandler;
-import org.traccar.handler.events.FuelDropEventHandler;
-import org.traccar.handler.events.GeofenceEventHandler;
-import org.traccar.handler.events.HighHumidityEventHandler;
-import org.traccar.handler.events.IgnitionEventHandler;
-import org.traccar.handler.events.LowHumidityEventHandler;
-import org.traccar.handler.events.LowTemperatureEventHandler;
-import org.traccar.handler.events.MaintenanceEventHandler;
-import org.traccar.handler.events.MotionEventHandler;
-import org.traccar.handler.events.OverspeedEventHandler;
+import org.traccar.handler.events.*;
 import org.traccar.handler.ComputedAttributesHandler;
 import org.traccar.handler.CopyAttributesHandler;
-import org.traccar.handler.events.HighTemperatureEventHandler;
 import org.traccar.handler.DistanceHandler;
 import org.traccar.handler.EngineHoursHandler;
 import org.traccar.handler.FilterHandler;
@@ -159,7 +147,9 @@ public abstract class BasePipelineFactory extends ChannelInitializer<Channel> {
                     LowTemperatureEventHandler.class,
                     HighHumidityEventHandler.class,
                     LowHumidityEventHandler.class,
-                    DriverEventHandler.class);
+                    DriverEventHandler.class,
+                    HiveMovementEventHandler.class
+            );
         }
 
         pipeline.addLast(new MainEventHandler());

@@ -25,6 +25,7 @@ public final class TrackBeesUtil {
         createAndLinkNotification(Event.TYPE_LOW_TEMPERATURE, userId, commaSeparatedNotificatorTypes);
         createAndLinkNotification(Event.TYPE_HIGH_HUMIDITY, userId, commaSeparatedNotificatorTypes);
         createAndLinkNotification(Event.TYPE_LOW_HUMIDITY, userId, commaSeparatedNotificatorTypes);
+        createAndLinkNotification(Event.TYPE_HIVE_MOVEMENT, userId, commaSeparatedNotificatorTypes);
 
         Context.getNotificationManager().refreshItems();
     }

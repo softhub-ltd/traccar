@@ -1,0 +1,9 @@
+#set($subject = "[Alert] High temperature for $device.name")
+<!DOCTYPE html>
+<html>
+<body>
+<p>
+    $device.name is being moved at $dateTool.format("YYYY-MM-dd HH:mm", $event.serverTime, $locale, $timezone)
+</p>
+</body>
+</html>
