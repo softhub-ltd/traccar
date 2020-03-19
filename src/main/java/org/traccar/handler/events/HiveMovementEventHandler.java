@@ -24,8 +24,8 @@ import java.util.Objects;
 @ChannelHandler.Sharable
 public class HiveMovementEventHandler extends BaseEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveMovementEventHandler.class);
-    private static String DEFAULT_CATEGORY = "default";
-    private static String ANIMAL_CATEGORY = "animal";
+    private static final String DEFAULT_CATEGORY = "default";
+    private static final String ANIMAL_CATEGORY = "animal";
     private final IdentityManager identityManager;
 
     public HiveMovementEventHandler(IdentityManager identityManager) {
