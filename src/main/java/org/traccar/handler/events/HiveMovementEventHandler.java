@@ -44,11 +44,15 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         if (position.getAttributes().containsKey(Position.KEY_MOTION)) {
             Position lastPosition = identityManager.getLastPosition(position.getDeviceId());
             boolean isNowMoving = position.getBoolean(Position.KEY_MOTION);
+            // This is just tolerance to avoid aggressive notifications
             boolean itWasMoving = lastPosition != null && lastPosition.getBoolean(Position.KEY_MOTION);
             boolean isHive = device.getCategory() != null
                     && device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
-            if (isHive && itWasMoving && isNowMoving) {
-                LOGGER.info("Movement detected on device {} with ID {}", device.getName(), device.getUniqueId());
+            boolean didPositionChange = didPositionChange(lastPosition, position);
+
+            if (isHive && didPositionChange && itWasMoving && isNowMoving) {
+                LOGGER.info("Detected movement of speed {} on device {} with ID {}",
+                        position.getSpeed(), device.getName(), device.getUniqueId());
                 Event event = new Event(Event.TYPE_HIVE_MOVEMENT, position.getDeviceId(), position.getId());
                 return Collections.singletonMap(event, position);
             }
@@ -56,4 +60,11 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         return Collections.emptyMap();
     }
 
+
+    private boolean didPositionChange(Position lastPosition, Position newPosition) {
+        return  lastPosition != null
+                && newPosition != null
+                && lastPosition.getLatitude() !=  newPosition.getLatitude()
+                && lastPosition.getLongitude() != newPosition.getLongitude();
+    }
 }
