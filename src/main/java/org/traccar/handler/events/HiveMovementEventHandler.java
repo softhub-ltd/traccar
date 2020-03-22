@@ -43,15 +43,13 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         }
         if (position.getAttributes().containsKey(Position.KEY_MOTION)) {
             Position lastPosition = identityManager.getLastPosition(position.getDeviceId());
-            boolean isNowMoving = position.getBoolean(Position.KEY_MOTION);
-            // This is just tolerance to avoid aggressive notifications
-            boolean itWasMoving = lastPosition != null && lastPosition.getBoolean(Position.KEY_MOTION);
+            // boolean itWasMoving = lastPosition != null && lastPosition.getBoolean(Position.KEY_MOTION);
+            boolean isMoving = position.getBoolean(Position.KEY_MOTION);
             boolean isHive = device.getCategory() != null
                     && device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
-            boolean didPositionChange = didPositionChange(lastPosition, position);
 
-            if (isHive && didPositionChange && itWasMoving && isNowMoving) {
-                LOGGER.info("Detected movement of speed {} on device {} with ID {}",
+            if (isHive && isMoving && didPositionChange(lastPosition, position)) {
+                LOGGER.info("Detected movement of speed {} on device {} with id {}",
                         position.getSpeed(), device.getName(), device.getUniqueId());
                 Event event = new Event(Event.TYPE_HIVE_MOVEMENT, position.getDeviceId(), position.getId());
                 return Collections.singletonMap(event, position);
@@ -60,8 +58,11 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         return Collections.emptyMap();
     }
 
-
     private boolean didPositionChange(Position lastPosition, Position newPosition) {
+        // This is a case for very first position where last position does not exist
+        if (Objects.isNull(lastPosition) && Objects.nonNull(newPosition)) {
+            return true;
+        }
         return  lastPosition != null
                 && newPosition != null
                 && lastPosition.getLatitude() !=  newPosition.getLatitude()
