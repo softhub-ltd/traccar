@@ -3,19 +3,25 @@ package org.traccar.handler.events;
 import io.netty.channel.ChannelHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.traccar.config.Config;
+import org.traccar.config.Keys;
 import org.traccar.database.IdentityManager;
+import org.traccar.helper.DistanceCalculator;
 import org.traccar.model.Device;
 import org.traccar.model.Event;
 import org.traccar.model.Position;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * An event handler which generates new event if movement is detected.
- * This handler  is specific for hives and depends on the motion status,
- * if the device in the hive reports motion, it means the hive is being stolen.
+ * This handler  is specific for hives and the algorithm depends on the motion status,
+ * speed and distance between positions.
+ * If a device in the hive is moving, this means the hive is being stolen.
  *
  * @author Hemed Ali
  * <p>
@@ -26,10 +32,13 @@ public class HiveMovementEventHandler extends BaseEventHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(HiveMovementEventHandler.class);
     private static final String DEFAULT_CATEGORY = "default";
     private static final String ANIMAL_CATEGORY = "animal";
+    private final double minPositionDistance;
+
     private final IdentityManager identityManager;
 
-    public HiveMovementEventHandler(IdentityManager identityManager) {
+    public HiveMovementEventHandler(Config config, IdentityManager identityManager) {
         this.identityManager = identityManager;
+        minPositionDistance = config.getDouble(Keys.EVENT_MIN_POSITION_DISTANCE, 2.5);
     }
 
     @Override
@@ -48,9 +57,17 @@ public class HiveMovementEventHandler extends BaseEventHandler {
             boolean isHive = device.getCategory() != null
                     && device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
 
-            if (isHive && isMoving && didPositionChange(lastPosition, position)) {
-                LOGGER.info("Detected movement of speed {} on device {} with id {}",
-                        position.getSpeed(), device.getName(), device.getUniqueId());
+            double positionDistance = BigDecimal.valueOf(getDistance(lastPosition, position))
+                    .setScale(2, RoundingMode.HALF_EVEN)
+                    .doubleValue();
+
+            if (isHive && isMoving && positionDistance > minPositionDistance) {
+                LOGGER.info("Detected movement of speed {}k and distance {}m on device {} with id {}",
+                        position.getSpeed(),
+                        positionDistance,
+                        device.getName(),
+                        device.getUniqueId()
+                );
                 Event event = new Event(Event.TYPE_HIVE_MOVEMENT, position.getDeviceId(), position.getId());
                 return Collections.singletonMap(event, position);
             }
@@ -58,14 +75,19 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         return Collections.emptyMap();
     }
 
-    private boolean didPositionChange(Position lastPosition, Position newPosition) {
-        // This is a case for very first position where last position does not exist
-        if (Objects.isNull(lastPosition) && Objects.nonNull(newPosition)) {
-            return true;
+    /**
+     * Gets distance between two positions. The distance is in meters.
+     */
+    private static double getDistance(Position lastPosition, Position newPosition) {
+        if (Objects.nonNull(newPosition)) {
+            if (Objects.isNull(lastPosition)) {
+                return DistanceCalculator.distance(0.0, 0.0,
+                        newPosition.getLatitude(), newPosition.getLongitude());
+            }
+            return DistanceCalculator.distance(
+                    lastPosition.getLatitude(), lastPosition.getLongitude(),
+                    newPosition.getLatitude(), newPosition.getLongitude());
         }
-        return  lastPosition != null
-                && newPosition != null
-                && lastPosition.getLatitude() !=  newPosition.getLatitude()
-                && lastPosition.getLongitude() != newPosition.getLongitude();
+        return 0.0;
     }
 }

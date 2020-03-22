@@ -411,8 +411,8 @@ public class MainModule extends AbstractModule {
     @Singleton
     @Provides
     public static HiveMovementEventHandler provideHiveStolenEventHandler(
-            IdentityManager identityManager) {
-        return new HiveMovementEventHandler(identityManager);
+            Config config, IdentityManager identityManager) {
+        return new HiveMovementEventHandler(config, identityManager);
     }
 
     @Override

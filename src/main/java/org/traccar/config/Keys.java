@@ -91,6 +91,12 @@ public final class Keys {
             "event.lowHumidityThreshold", Double.class);
 
     /**
+     * Minimum threshold for position distance
+     */
+    public static final ConfigKey EVENT_MIN_POSITION_DISTANCE = new ConfigKey(
+            "event.minPositionDistance", Double.class);
+
+    /**
      * List of external handler classes to use in Netty pipeline.
      */
     public static final ConfigKey EXTRA_HANDLERS = new ConfigKey(
