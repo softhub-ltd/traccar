@@ -39,6 +39,33 @@ public class H02ProtocolDecoderTest extends ProtocolTest {
     }
 
 
+
+    @Test
+    public void shouldContainTempHumidityBattery() throws  Exception {
+        //See more https://stackoverflow.com/questions/30652661/gps-tracking-grtq
+        H02ProtocolDecoder decoder = new H02ProtocolDecoder(null);
+        // ByteBuf protocolMessage = binary("2498050059240936082503202928053501106282762c000170bffffbffff001a000000000001cc00ff0a01be000000f5000050");
+        ByteBuf protocolMessage = binary(    "2498050059240946412503202928053501106282762c000170bffffbffff001a000000000001cc00ff0901be000000f4000054");
+        // ByteBuf protocolMessage = binary("2498010000080545282111182928026600106283039e000000fbfffbffff0015000000000001cc00ff0000b200000000000011");
+        // ByteBuf protocolMessage = binary(    "2498050059241043432503202928065501106282729E000000FFFFFBFFFF0015160000000001CC00FF0A00FC0103010D02730B");
+        // ByteBuf protocolMessage = binary(    "2498050059241122321304202928066602106282618c000000bffffbffff0017000000000001cc00ff190000000000b902aa3a");
+        Position position = (Position) decoder.decode(null, null, protocolMessage);
+        assertEquals(24.4, position.getAttributes().get(Position.KEY_TEMPERATURE));
+        assertEquals(0.0, position.getAttributes().get(Position.KEY_HUMIDITY));
+        assertEquals(9,   position.getAttributes().get(Position.KEY_BATTERY_LEVEL));
+
+        /*System.out.println(
+                " \nid: " +  position.getDeviceId() +
+                        " \ntime: "  + position.getDeviceTime() +
+                        " \nlat: " +  position.getLatitude() +
+                        " \nlong: " + position.getLongitude() +
+                        " \nisValid: "  + position.getValid() +
+                        " \nspeed: " + position.getSpeed()+
+                        " \nattributes: " + position.getAttributes()
+        );*/
+    }
+
+
     @Test
     public void testDecode() throws Exception {
         H02ProtocolDecoder decoder = new H02ProtocolDecoder(null);

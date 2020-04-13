@@ -104,11 +104,8 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
     }
 
     private Position decodeBinary(ByteBuf buf, Channel channel, SocketAddress remoteAddress) {
-
         Position position = new Position(getProtocolName());
-
         boolean longId = buf.readableBytes() == 42;
-
         buf.readByte(); // marker
 
         String id;
@@ -136,8 +133,8 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
         double latitude = readCoordinate(buf, false);
         position.set(Position.KEY_BATTERY_LEVEL, decodeBattery(buf.readUnsignedByte()));
         double longitude = readCoordinate(buf, true);
-
         int flags = buf.readUnsignedByte() & 0x0f;
+
         position.setValid((flags & 0x02) != 0);
         if ((flags & 0x04) == 0) {
             latitude = -latitude;
@@ -145,14 +142,24 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
         if ((flags & 0x08) == 0) {
             longitude = -longitude;
         }
-
         position.setLatitude(latitude);
         position.setLongitude(longitude);
-
         position.setSpeed(BcdUtil.readInteger(buf, 3));
         position.setCourse((buf.readUnsignedByte() & 0x0f) * 100.0 + BcdUtil.readInteger(buf, 2));
-
         processStatus(position, buf.readUnsignedInt());
+
+        // Process extra parameters, if available.
+        // This is specific for TrackBees. See protocol documentation
+       if (buf.capacity() > 50) { //Ensure the buffer has enough capacity
+            //Extract battery level, temperature and humidity
+            int batteryLevel = Integer.parseInt(ByteBufUtil.hexDump(buf, 41, 1), 16);
+            double temperature = processTempOrHumidity(ByteBufUtil.hexDump(buf, 46, 2));
+            double humidity =  processTempOrHumidity(ByteBufUtil.hexDump(buf, 48, 2));
+
+            position.set(Position.KEY_BATTERY_LEVEL, batteryLevel);
+            position.set(Position.KEY_TEMPERATURE, temperature);
+            position.set(Position.KEY_HUMIDITY, humidity);
+       }
 
         return position;
     }
@@ -294,6 +301,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
         }
     }
 
+
     private Position decodeText(String sentence, Channel channel, SocketAddress remoteAddress) {
 
         Parser parser = new Parser(PATTERN, sentence);
@@ -376,8 +384,8 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
                 // Based on the protocol documentation,
                 // the values for temperature and humidity
                 // are at position index 4 and 5 respectively.
-                double temperature = processTemp(values[4], 0.0);
-                double humidity = processHumidity(values[5], 0.0);
+                double temperature = processTempOrHumidity(values[4], 0.0);
+                double humidity = processTempOrHumidity(values[5], 0.0);
 
                 position.set(Position.KEY_TEMPERATURE, temperature);
                 position.set(Position.KEY_HUMIDITY, humidity);
@@ -392,9 +400,24 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
 
 
     /**
-     * Processes temperature. The input can have maximum of 4 digits
+     * Converts given hex dump to decimal.
      */
-    private double processTemp(String input, double defaultValue) {
+    private double processTempOrHumidity(String hexInput) {
+        String decimalString = "";
+        if (!Strings.isNullOrEmpty(hexInput)) {
+            //Convert to decimal
+            decimalString += Integer.parseInt(hexInput, 16);
+        }
+        return processTempOrHumidity(decimalString, 0.0);
+    }
+
+
+
+        /**
+         * Processes temperature. The input can have maximum of 4 digits.
+         * The conversion unit is 0.1 Centigrade/Percentage
+         */
+    private double processTempOrHumidity(String input, double defaultValue) {
         if (!Strings.isNullOrEmpty(input)) {
             double in = Double.parseDouble(input.trim());
             if (in > 100.00 && in < 1000) {
@@ -408,10 +431,6 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
         return defaultValue;
     }
 
-
-    private double processHumidity(String input, double defaultValue) {
-        return processTemp(input, defaultValue);
-    }
 
 
     private Position decodeLbs(String sentence, Channel channel, SocketAddress remoteAddress) {
