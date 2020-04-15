@@ -40,6 +40,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 public class H02ProtocolDecoder extends BaseProtocolDecoder {
+    private static final int TRACKBEES_MESSAGE_LENGTH = 51;
 
     public H02ProtocolDecoder(Protocol protocol) {
         super(protocol);
@@ -104,6 +105,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
     }
 
     private Position decodeBinary(ByteBuf buf, Channel channel, SocketAddress remoteAddress) {
+        System.out.println(ByteBufUtil.prettyHexDump(buf));
         Position position = new Position(getProtocolName());
         boolean longId = buf.readableBytes() == 42;
         buf.readByte(); // marker
@@ -148,10 +150,8 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
         position.setCourse((buf.readUnsignedByte() & 0x0f) * 100.0 + BcdUtil.readInteger(buf, 2));
         processStatus(position, buf.readUnsignedInt());
 
-        // Process extra parameters, if available.
-        // This is specific for TrackBees. See protocol documentation
-       if (buf.capacity() > 50) { //Ensure the buffer has enough capacity
-            //Extract battery level, temperature and humidity
+        // Extract battery level, temperature and humidity, if available.
+       if (buf.capacity() >= TRACKBEES_MESSAGE_LENGTH) { //Ensure the buffer has enough capacity
             int batteryLevel = Integer.parseInt(ByteBufUtil.hexDump(buf, 41, 1), 16);
             double temperature = processTempOrHumidity(ByteBufUtil.hexDump(buf, 46, 2));
             double humidity =  processTempOrHumidity(ByteBufUtil.hexDump(buf, 48, 2));
@@ -159,8 +159,7 @@ public class H02ProtocolDecoder extends BaseProtocolDecoder {
             position.set(Position.KEY_BATTERY_LEVEL, batteryLevel);
             position.set(Position.KEY_TEMPERATURE, temperature);
             position.set(Position.KEY_HUMIDITY, humidity);
-       }
-
+      }
         return position;
     }
 
