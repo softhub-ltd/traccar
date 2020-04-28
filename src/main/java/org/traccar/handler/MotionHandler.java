@@ -22,13 +22,22 @@ import org.traccar.database.IdentityManager;
 import org.traccar.helper.DistanceCalculator;
 import org.traccar.model.Position;
 
+/**
+ * Handles device motion.
+ * Most GPS devices report speed errors due to surrounding environment. Sometimes, a device may report high speed,
+ * but it is not actually moving. To tackle this, we introduce additional check - position distance.
+ * This means a device will be considered moving if its speed is above the threshold AND
+ * its distance from the previous position is greater than the minimum position distance.
+ *
+ * Hemed, 2020-05-28
+ */
+
 @ChannelHandler.Sharable
 public class MotionHandler extends BaseDataHandler {
 
-    private double speedThreshold;
-    private double minPositionDistance;
+    private double minPositionDistance = 1.0; // default
+    private final double speedThreshold;
     private final IdentityManager identityManager;
-
 
     public MotionHandler(double speedThreshold, double minPositionDistance, IdentityManager identityManager) {
         this.speedThreshold = speedThreshold;
@@ -39,27 +48,16 @@ public class MotionHandler extends BaseDataHandler {
     public MotionHandler(double speedThreshold, IdentityManager identityManager) {
         this.speedThreshold = speedThreshold;
         this.identityManager = identityManager;
-        this.minPositionDistance = 1.0;
     }
-
-    /**
-     * Most GPS devices report speed errors. The device may show high speed, but it is not actually moving.
-     * To tackle this, I have introduced position distance.
-     * This means the device is moving if the its speed is above the threshold AND
-     * its distance from the previous position is greater than the minimum position distance.
-     * Hemed, 2020-05-28
-     */
 
     @Override
     protected Position handlePosition(Position position) {
         if (!position.getAttributes().containsKey(Position.KEY_MOTION)) {
-            Position lastPosition = null;
-            if (identityManager != null) {
-                lastPosition = identityManager.getLastPosition(position.getDeviceId());
-            }
+            Position lastPosition = identityManager != null
+                    ? identityManager.getLastPosition(position.getDeviceId())
+                    : null;
             double positionDistance = DistanceCalculator.calculateDistance(lastPosition, position);
-            boolean isMoving = position.getSpeed() > speedThreshold
-                    && positionDistance > minPositionDistance;
+            boolean isMoving = position.getSpeed() > speedThreshold && positionDistance > minPositionDistance;
             position.set(Position.KEY_MOTION, isMoving);
         }
         return position;
