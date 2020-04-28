@@ -38,7 +38,7 @@ public class HiveMovementEventHandler extends BaseEventHandler {
 
     public HiveMovementEventHandler(Config config, IdentityManager identityManager) {
         this.identityManager = identityManager;
-        minPositionDistance = config.getDouble(Keys.EVENT_MIN_POSITION_DISTANCE, 2.5);
+        minPositionDistance = config.getDouble(Keys.EVENT_MIN_POSITION_DISTANCE, 1.0);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class HiveMovementEventHandler extends BaseEventHandler {
             boolean isHive = device.getCategory() != null
                     && device.getCategory().equalsIgnoreCase(DEFAULT_CATEGORY);
 
-            double positionDistance = BigDecimal.valueOf(getDistance(lastPosition, position))
+            double positionDistance = BigDecimal.valueOf(DistanceCalculator.calculateDistance(lastPosition, position))
                     .setScale(2, RoundingMode.HALF_EVEN)
                     .doubleValue();
 
@@ -75,19 +75,4 @@ public class HiveMovementEventHandler extends BaseEventHandler {
         return Collections.emptyMap();
     }
 
-    /**
-     * Gets distance between two positions. The distance is in meters.
-     */
-    private static double getDistance(Position lastPosition, Position newPosition) {
-        if (Objects.nonNull(newPosition)) {
-            if (Objects.isNull(lastPosition)) {
-                return DistanceCalculator.distance(0.0, 0.0,
-                        newPosition.getLatitude(), newPosition.getLongitude());
-            }
-            return DistanceCalculator.distance(
-                    lastPosition.getLatitude(), lastPosition.getLongitude(),
-                    newPosition.getLatitude(), newPosition.getLongitude());
-        }
-        return 0.0;
-    }
 }

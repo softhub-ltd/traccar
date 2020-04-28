@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.traccar.helper;
+import org.traccar.model.Position;
+import java.util.Objects;
 
 public final class DistanceCalculator {
 
@@ -48,6 +50,23 @@ public final class DistanceCalculator {
         double halfP = (d0 + d1 + d2) * 0.5;
         double area = Math.sqrt(halfP * (halfP - d0) * (halfP - d1) * (halfP - d2));
         return 2 * area / d1;
+    }
+
+
+    /**
+     * Gets distance between two positions. The distance is in meters.
+     */
+    public static double calculateDistance(Position lastPosition, Position newPosition) {
+        if (Objects.nonNull(newPosition)) {
+            if (Objects.isNull(lastPosition)) {
+                return DistanceCalculator.distance(0.0, 0.0,
+                        newPosition.getLatitude(), newPosition.getLongitude());
+            }
+            return DistanceCalculator.distance(
+                    lastPosition.getLatitude(), lastPosition.getLongitude(),
+                    newPosition.getLatitude(), newPosition.getLongitude());
+        }
+        return 0.0;
     }
 
 }

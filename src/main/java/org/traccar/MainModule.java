@@ -274,8 +274,10 @@ public class MainModule extends AbstractModule {
 
     @Singleton
     @Provides
-    public static MotionHandler provideMotionHandler(TripsConfig tripsConfig) {
-        return new MotionHandler(tripsConfig.getSpeedThreshold());
+    public static MotionHandler provideMotionHandler(
+            TripsConfig tripsConfig, Config config, IdentityManager identityManager) {
+        double minPositionDistance = config.getDouble(Keys.EVENT_MIN_POSITION_DISTANCE, 1.0);
+        return new MotionHandler(tripsConfig.getSpeedThreshold(), minPositionDistance, identityManager);
     }
 
     @Singleton
